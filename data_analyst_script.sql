@@ -19,7 +19,11 @@ LIMIT 10;
 
 
 -- 3. How many postings are in Tennessee? How many are there in either Tennessee or Kentucky?
--- 27
+-- 21 and 27
+
+SELECT COUNT(*)
+FROM data_analyst_jobs
+WHERE location = 'TN';
 
 SELECT COUNT(*)
 FROM data_analyst_jobs
@@ -72,6 +76,18 @@ WHERE location = 'CA';
 -- across all locations. How many companies are there with more that 5000 reviews across all locations?
 -- 70
 
+SELECT DISTINCT company, AVG(star_rating) AS avg_rating
+FROM data_analyst_jobs
+WHERE company IS NOT NULL AND review_count > 5000
+GROUP BY company;
+
+SELECT COUNT(DISTINCT company)
+FROM data_analyst_jobs
+WHERE company IS NOT NULL AND review_count > 5000;
+
+
+-- OR, considering "across all locations":
+
 SELECT DISTINCT company,  AVG(star_rating) AS avg_rating
 FROM data_analyst_jobs
 WHERE company IS NOT NULL AND star_rating IS NOT NULL
@@ -87,12 +103,20 @@ FROM (
 	WHERE company IS NOT NULL AND star_rating IS NOT NULL
 	GROUP BY company
 	HAVING SUM(review_count) > 5000
-	) AS total_companies
+	) AS total_companies;
 
 
 -- 10. Add the code to order the query in #9 from highest to lowest average star rating. Which company with more 
 -- than 5000 reviews across all locations in the dataset has the highest star rating? What is that rating?
 -- Google with a rating of 4.3
+
+SELECT DISTINCT company, AVG(star_rating) AS avg_rating
+FROM data_analyst_jobs
+WHERE company IS NOT NULL AND review_count > 5000
+GROUP BY company
+ORDER BY avg_rating DESC;
+
+-- Or:
 
 SELECT DISTINCT company,  AVG(star_rating) AS avg_rating
 FROM data_analyst_jobs
@@ -131,6 +155,7 @@ FROM data_analyst_jobs
 WHERE skill LIKE '%SQL%' and domain IS NOT NULL AND days_since_posting > 21
 GROUP BY domain
 ORDER BY sql_jobs DESC
+LIMIT 4;
 
 -- 1. Internet and Software - 62
 -- 2. Banks and Financial Services - 61
